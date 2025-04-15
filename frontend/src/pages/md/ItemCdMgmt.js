@@ -146,9 +146,15 @@ const ItemMgmt = () => {
 //    {_DATA_ID: 'USE_YN_A', LRG_CD: 'USE_YN', CODE_NM: '사용여부', _OPTIONS: 'A'},  // 사용여부, 옵션: 전체
 //    {_DATA_ID: 'USE_YN_N', LRG_CD: 'USE_YN', CODE_NM: '사용여부', _OPTIONS: ''},  // 사용여부, 옵션:
     {_DATA_ID: 'UNIT_GCD_A'    , LRG_CD: 'UNIT_GCD'    , CODE_NM: '단위구분코드', _OPTIONS: 'A'},  // 단위구분코드, 옵션: 전체
+    {_DATA_ID: 'UNIT_GCD_B'    , LRG_CD: 'UNIT_GCD'    , CODE_NM: '단위구분코드', _OPTIONS: 'B'},  // 단위구분코드, 옵션: ''
+    {_DATA_ID: 'ITEM_LOC_CD_B' , LRG_CD: 'ITEM_LOC_CD' , CODE_NM: '창고위치코드', _OPTIONS: 'B'},  // 창고위치코드, 옵션: ''
     {_DATA_ID: 'TAX_YN_A'      , LRG_CD: 'TAX_YN'      , CODE_NM: '과세여부'   , _OPTIONS: 'A'},  // 과세여부, 옵션: 전체
+    {_DATA_ID: 'TAX_YN_N'      , LRG_CD: 'TAX_YN'      , CODE_NM: '과세여부'   , _OPTIONS: ''},  // 과세여부, 옵션:
+    {_DATA_ID: 'STK_YN_N'      , LRG_CD: 'STK_YN'      , CODE_NM: '재고여부'   , _OPTIONS: ''},  // 재고여부, 옵션:
     {_DATA_ID: 'PRC_APLY_GCD_A', LRG_CD: 'PRC_APLY_GCD', CODE_NM: '단가적용구분', _OPTIONS: 'A'},  // 단가적용구분, 옵션: 전체
+    {_DATA_ID: 'PRC_APLY_GCD_S', LRG_CD: 'PRC_APLY_GCD', CODE_NM: '단가적용구분', _OPTIONS: 'S'},  // 단가적용구분, 옵션: 선택
     {_DATA_ID: 'SAL_STOP_YN_A' , LRG_CD: 'SAL_STOP_YN' , CODE_NM: '판매중지여부', _OPTIONS: 'A'},  // 판매중지여부, 옵션: 전체
+    {_DATA_ID: 'SAL_STOP_YN_N' , LRG_CD: 'SAL_STOP_YN' , CODE_NM: '판매중지여부', _OPTIONS: ''},  // 판매중지여부, 옵션:
 //    {_DATA_ID: 'STK_YN_A'      , LRG_CD: 'STK_YN'      , CODE_NM: '재고여부'   , _OPTIONS: 'A'},  // 재고여부, 옵션: 전체
   ]);
 
@@ -947,6 +953,16 @@ const ItemMgmt = () => {
                     /*singleClickEdit: true,*/
                   },
                   {
+                    field: 'ITEM_LOC_CD',
+                    headerName: '창고위치',
+                    width: 100,
+                    headerClass: 'ag-header-center', // 가운데 정렬
+                    cellStyle: { textAlign: 'left' },
+                    cellDataType : 'text',
+                    /*editable: true,*/
+                    /*singleClickEdit: true,*/
+                  },
+                  {
                     field: 'PUR_PRC',
                     headerName: '구매단가',
                     width: 100,
@@ -982,16 +998,6 @@ const ItemMgmt = () => {
                   {
                     field: 'CUST_NM',
                     headerName: '매입처',
-                    width: 100,
-                    headerClass: 'ag-header-center', // 가운데 정렬
-                    cellStyle: { textAlign: 'left' },
-                    cellDataType : 'text',
-                    /*editable: true,*/
-                    /*singleClickEdit: true,*/
-                  },
-                  {
-                    field: 'ITEM_LOC_CD',
-                    headerName: '창고위치',
                     width: 100,
                     headerClass: 'ag-header-center', // 가운데 정렬
                     cellStyle: { textAlign: 'left' },
@@ -1358,34 +1364,90 @@ const ItemMgmt = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목1</label>
+                      <label>단위구분</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <select
+                        ref={fieldRefs.itemCdInfo.UNIT_GCD}
+                        value={selectedItem ? selectedItem.UNIT_GCD : newItem.UNIT_GCD}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, UNIT_GCD: e.target.value })
+                            : setNewItem({ ...newItem, UNIT_GCD: e.target.value })
+                        }
+                        className="form-select"
+                        disabled={!isDisabled}
+                      >
+                        {(commonCodes.find(item => item.UNIT_GCD_B)?.UNIT_GCD_B || []).map((option) => (
+                          <option key={option.SML_CD} value={option.SML_CD}>
+                            {option.SML_NM}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목2</label>
+                      <label>박스수량</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.BOX_QTY}
+                        type="number"
+                        value={selectedItem ? selectedItem.BOX_QTY : newItem.BOX_QTY}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, BOX_QTY: e.target.value })
+                            : setNewItem({ ...newItem, BOX_QTY: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목3</label>
+                      <label>거래처코드</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.CUST_CD}
+                        type="text"
+                        value={selectedItem ? selectedItem.CUST_CD : newItem.CUST_CD}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, CUST_CD: e.target.value })
+                            : setNewItem({ ...newItem, CUST_CD: e.target.value })
+                        }
+                        maxLength="10"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목4</label>
+                      <label>창고위치</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.ITEM_LOC_CD}
+                        type="text"
+                        value={selectedItem ? selectedItem.ITEM_LOC_CD : newItem.ITEM_LOC_CD}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, ITEM_LOC_CD: e.target.value })
+                            : setNewItem({ ...newItem, ITEM_LOC_CD: e.target.value })
+                        }
+                        maxLength="10"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1394,34 +1456,92 @@ const ItemMgmt = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목1</label>
+                      <label>매입단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.PUR_PRC}
+                        type="number"
+                        value={selectedItem ? selectedItem.PUR_PRC : newItem.PUR_PRC}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, PUR_PRC: e.target.value })
+                            : setNewItem({ ...newItem, PUR_PRC: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목2</label>
+                      <label>출고단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.OUT_PRC}
+                        type="number"
+                        value={selectedItem ? selectedItem.OUT_PRC : newItem.OUT_PRC}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, OUT_PRC: e.target.value })
+                            : setNewItem({ ...newItem, OUT_PRC: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목3</label>
+                      <label>판매단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.SAL_PRC}
+                        type="number"
+                        value={selectedItem ? selectedItem.SAL_PRC : newItem.SAL_PRC}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, SAL_PRC: e.target.value })
+                            : setNewItem({ ...newItem, SAL_PRC: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목4</label>
+                      <label>과세여부</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <select
+                        ref={fieldRefs.itemCdInfo.TAX_YN}
+                        value={selectedItem ? selectedItem.TAX_YN : newItem.TAX_YN}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, TAX_YN: e.target.value })
+                            : setNewItem({ ...newItem, TAX_YN: e.target.value })
+                        }
+                        className="form-select required"
+                        disabled={!isDisabled}
+                      >
+                        {(commonCodes.find(item => item.TAX_YN_N)?.TAX_YN_N || []).map((option) => (
+                          <option key={option.SML_CD} value={option.SML_CD}>
+                            {option.SML_NM}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1430,34 +1550,93 @@ const ItemMgmt = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목1</label>
+                      <label>재고수량</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.STK_QTY}
+                        type="number"
+                        value={selectedItem ? selectedItem.STK_QTY : newItem.STK_QTY}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_QTY: e.target.value })
+                            : setNewItem({ ...newItem, STK_QTY: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목2</label>
+                      <label>재고여부</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <select
+                        ref={fieldRefs.itemCdInfo.STK_YN}
+                        value={selectedItem ? selectedItem.STK_YN : newItem.STK_YN}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_YN: e.target.value })
+                            : setNewItem({ ...newItem, STK_YN: e.target.value })
+                        }
+                        className="form-select required"
+                        disabled={!isDisabled}
+                      >
+                        {(commonCodes.find(item => item.STK_YN_N)?.STK_YN_N || []).map((option) => (
+                          <option key={option.SML_CD} value={option.SML_CD}>
+                            {option.SML_NM}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목3</label>
+                      <label>재고조정일자</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.STK_ADJ_DT}
+                        type="text"
+                        value={selectedItem ? selectedItem.STK_ADJ_DT : newItem.STK_ADJ_DT}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_ADJ_DT: e.target.value })
+                            : setNewItem({ ...newItem, STK_ADJ_DT: e.target.value })
+                        }
+                        maxLength="10"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목4</label>
+                      <label>단가적용구분</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <select
+                        ref={fieldRefs.itemCdInfo.PRC_APLY_GCD}
+                        value={selectedItem ? selectedItem.PRC_APLY_GCD : newItem.PRC_APLY_GCD}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, PRC_APLY_GCD: e.target.value })
+                            : setNewItem({ ...newItem, PRC_APLY_GCD: e.target.value })
+                        }
+                        className="form-select required"
+                        disabled={!isDisabled}
+                      >
+                        {(commonCodes.find(item => item.PRC_APLY_GCD_S)?.PRC_APLY_GCD_S || []).map((option) => (
+                          <option key={option.SML_CD} value={option.SML_CD}>
+                            {option.SML_NM}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1466,34 +1645,272 @@ const ItemMgmt = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목1</label>
+                      <label>재고기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.STK_PER}
+                        type="number"
+                        value={selectedItem ? selectedItem.STK_PER : newItem.STK_PER}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_PER: e.target.value })
+                            : setNewItem({ ...newItem, STK_PER: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목2</label>
+                      <label>발주기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.ORD_PER}
+                        type="number"
+                        value={selectedItem ? selectedItem.ORD_PER : newItem.ORD_PER}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, ORD_PER: e.target.value })
+                            : setNewItem({ ...newItem, ORD_PER: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목3</label>
+                      <label>매입기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.PUR_PER}
+                        type="number"
+                        value={selectedItem ? selectedItem.PUR_PER : newItem.PUR_PER}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, PUR_PER: e.target.value })
+                            : setNewItem({ ...newItem, PUR_PER: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>항목4</label>
+                      <label>유통기한</label>
                     </div>
                     <div className="form-group-input">
-                      <input type="text" />
+                      <input
+                        ref={fieldRefs.itemCdInfo.EXP_PER}
+                        type="number"
+                        value={selectedItem ? selectedItem.EXP_PER : newItem.EXP_PER}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, EXP_PER: e.target.value })
+                            : setNewItem({ ...newItem, EXP_PER: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 여섯 번째 행 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>품목별칭</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.ITEM_ALIAS}
+                        type="text"
+                        value={selectedItem ? selectedItem.ITEM_ALIAS : newItem.ITEM_ALIAS}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, ITEM_ALIAS: e.target.value })
+                            : setNewItem({ ...newItem, ITEM_ALIAS: e.target.value })
+                        }
+                        maxLength="50"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>품목그룹명</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.ITEM_GRP_NM}
+                        type="text"
+                        value={selectedItem ? selectedItem.ITEM_GRP_NM : newItem.ITEM_GRP_NM}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, ITEM_GRP_NM: e.target.value })
+                            : setNewItem({ ...newItem, ITEM_GRP_NM: e.target.value })
+                        }
+                        maxLength="50"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>판매중지여부</label>
+                    </div>
+                    <div className="form-group-input">
+                      <select
+                        ref={fieldRefs.itemCdInfo.SAL_STOP_YN}
+                        value={selectedItem ? selectedItem.SAL_STOP_YN : newItem.SAL_STOP_YN}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, SAL_STOP_YN: e.target.value })
+                            : setNewItem({ ...newItem, SAL_STOP_YN: e.target.value })
+                        }
+                        className="form-select"
+                        disabled
+                      >
+                        {(commonCodes.find(item => item.SAL_STOP_YN_N)?.SAL_STOP_YN_N || []).map((option) => (
+                          <option key={option.SML_CD} value={option.SML_CD}>
+                            {option.SML_NM}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>판매중지일시</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.SAL_STOP_DTM}
+                        type="text"
+                        value={selectedItem ? selectedItem.SAL_STOP_DTM : newItem.SAL_STOP_DTM}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, SAL_STOP_DTM: e.target.value })
+                            : setNewItem({ ...newItem, SAL_STOP_DTM: e.target.value })
+                        }
+                        maxLength="50"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 일곱 번째 행 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>출고마진율</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.OUT_MRGN_RT}
+                        type="number"
+                        value={selectedItem ? selectedItem.OUT_MRGN_RT : newItem.BOX_QTY}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, OUT_MRGN_RT: e.target.value })
+                            : setNewItem({ ...newItem, OUT_MRGN_RT: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>할인마진율</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.DC_MRGN_RT}
+                        type="number"
+                        value={selectedItem ? selectedItem.DC_MRGN_RT : newItem.BOX_QTY}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, DC_MRGN_RT: e.target.value })
+                            : setNewItem({ ...newItem, DC_MRGN_RT: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>판매마진율</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.SAL_MRGN_RT}
+                        type="number"
+                        value={selectedItem ? selectedItem.SAL_MRGN_RT : newItem.SAL_MRGN_RT}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, SAL_MRGN_RT: e.target.value })
+                            : setNewItem({ ...newItem, SAL_MRGN_RT: e.target.value })
+                        }
+                        maxLength="5"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        style={{ textAlign: 'right' }}
+                        disabled={!isDisabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
+                      <label>바코드</label>
+                    </div>
+                    <div className="form-group-input">
+                      <input
+                        ref={fieldRefs.itemCdInfo.BARCODE}
+                        type="text"
+                        value={selectedItem ? selectedItem.BARCODE : newItem.BARCODE}
+                        onChange={(e) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, BARCODE: e.target.value })
+                            : setNewItem({ ...newItem, BARCODE: e.target.value })
+                        }
+                        maxLength="20"
+                        /*className="form-input required"*/
+                        className="form-input"
+                        disabled={!isDisabled}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1563,106 +1980,10 @@ const ItemMgmt = () => {
                   </div>
                 </div>
                 {/* 버튼 행 - 오른쪽 정렬 */}
+
               </div>
-
-
-
-
-
-
-
-
-
-              <div className="detail-grid">
-                {/* 첫 번째 행 */}
-                <div className="detail-row">
-                  <div className="detail-field">
-                    <div className="title-area">
-                      <label>품목코드 <span className="required-mark">*</span></label>
-                    </div>
-                    <div className="component-area">
-                      <input
-                        ref={fieldRefs.itemCdInfo.LOC_CD}
-                        type="text"
-                        value={selectedItem ? selectedItem.LOC_CD : newItem.LOC_CD}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, LOC_CD: value })
-                            : setNewItem({ ...newItem, LOC_CD: value });
-                        }}
-                        pattern="[a-zA-Z0-9_]*"
-                        maxLength="10"
-                        className="form-input uppercase-input required"
-                        disabled={!isDisabled || selectedItem}
-                      />
-                    </div>
-                    <div className="title-area">
-                      {/*<label>품목명 <span className="required-mark">*</span></label>*/}
-                      <label>품목명</label>
-                    </div>
-                    <div className="component-area">
-                      <input
-                        ref={fieldRefs.itemCdInfo.LOC_NM}
-                        type="text"
-                        value={selectedItem ? selectedItem.LOC_NM : newItem.LOC_NM}
-                        onChange={(e) =>
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, LOC_NM: e.target.value })
-                            : setNewItem({ ...newItem, LOC_NM: e.target.value })
-                        }
-                        maxLength="30"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        disabled={!isDisabled}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 두 번째 행 */}
-                <div className="detail-row">
-                  <div className="detail-field">
-                    <div className="title-area">
-                      <label>사용여부 <span className="required-mark">*</span></label>
-                    </div>
-                    <div className="component-area">
-                      <select
-                        ref={fieldRefs.itemCdInfo.USE_YN}
-                        value={selectedItem ? selectedItem.USE_YN : newItem.USE_YN}
-                        onChange={(e) =>
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, USE_YN: e.target.value })
-                            : setNewItem({ ...newItem, USE_YN: e.target.value })
-                        }
-                        className="form-select required"
-                        disabled={!isDisabled}
-                      >
-                        {(commonCodes.find(item => item.USE_YN_N)?.USE_YN_N || []).map((option) => (
-                          <option key={option.SML_CD} value={option.SML_CD}>
-                            {option.SML_NM}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="title-area-blank" style={{ width: '20%' }}>
-                      {/* 빈 공간 */}
-                    </div>
-                    <div className="component-area-blank" style={{ width: '30%' }}>
-                      {/* 빈 공간 */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-
-
-
-
             </div>
             {/* 레이어팝업 - 상세정보 영역 */}
-
 
           </Box>
         </Modal>

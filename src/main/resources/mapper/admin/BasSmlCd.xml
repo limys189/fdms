@@ -121,6 +121,9 @@
                 <when test="_OPTIONS.equalsIgnoreCase('S')">
                    , '선택' AS SML_NM
                 </when>
+                <when test="_OPTIONS.equalsIgnoreCase('B')">
+                   , '' AS SML_NM
+                </when>
                 <otherwise>
                    , '알수없음' AS SML_NM
                 </otherwise>

@@ -1,0 +1,57 @@
+<configuration>
+    <!-- 콘솔에 로그 출력 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 파일에 로그 출력 -->
+    <!--
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    -->
+
+    <!-- 루트 로거 설정 -->
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <!--<appender-ref ref="FILE" />-->
+    </root>
+
+    <!-- 특정 패키지의 로그 레벨 설정 -->
+    <!--
+      <로그 레벨 설명>
+        TRACE: 가장 상세한 로그 레벨로, 디버깅 시 사용됩니다.
+        DEBUG: 디버깅 정보를 출력합니다.
+        INFO: 일반적인 정보를 출력합니다.
+        WARN: 잠재적인 문제를 경고합니다.
+        ERROR: 오류가 발생한 경우 출력합니다.
+    -->
+    <logger name="com.ininfo.fdms" level="debug" />
+
+    <!-- MyBatis SQL 로깅 -->
+    <logger name="org.mybatis" level="debug"/>
+
+    <!-- JDBC 로깅 (실제 실행되는 쿼리 확인) -->
+    <logger name="java.sql.Connection" level="debug"/>
+    <logger name="java.sql.Statement" level="debug"/>
+    <logger name="java.sql.PreparedStatement" level="debug"/>
+    <logger name="java.sql.ResultSet" level="debug"/>
+
+    <!--
+    <logger name="jdbc.sqlonly" level="debug" appender-ref="console-infolog" />
+    <logger name="jdbc.resultsettable" level="debug" appender-ref="console-infolog" />
+    -->
+
+</configuration>

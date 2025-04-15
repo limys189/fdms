@@ -1,0 +1,76 @@
+.menu-container {
+  width: 100vw; /* 300px; */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 0;
+  height: 40px; /* menu-area 높이(40px)보다 약간 작게 */
+  /*display: flex;*/
+  align-items: center;
+  background: transparent;
+  /*box-shadow: 0 2px 4px rgba(0,0,0,0.1);*/ /* 그림자 효과 추가 */
+}
+
+.menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-item:hover {
+  background: #f5f5f5;
+}
+
+.menu-item.active {
+  background: #e8e8e8;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.menu-item.active .arrow {
+  transform: rotate(180deg);
+}
+
+.menu-depth-0 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-depth-1 {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.menu-depth-2 {
+  list-style: none;
+  padding-left: 40px;
+}
+
+/*
+.submenu-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.submenu-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.submenu-exit {
+  opacity: 1;
+}
+
+.submenu-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
+*/

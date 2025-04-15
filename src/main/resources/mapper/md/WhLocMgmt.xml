@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="WhLocMgmt">
+
+    <!-- 창고 위치 정보 생성 -->
+    <insert id="insertWhLoc">
+        INSERT
+          INTO TB_WH_LOC
+             ( CO_CD        /* 회사코드 */
+             , LOC_CD       /* 위치코드 */
+             , LOC_NM       /* 위치명 */
+             , USE_YN       /* 사용여부 */
+             , REG_DTM      /* 등록일시 */
+             , REGR_ID      /* 등록자ID */
+             , UPD_DTM      /* 수정일시 */
+             , UPDR_ID      /* 수정자ID */
+             )
+        VALUES
+             ( #{CO_CD}
+             , #{LOC_CD}
+             , #{LOC_NM}
+             , #{USE_YN}
+             , NOW()
+             , #{REGR_ID}
+             , NOW()
+             , #{UPDR_ID}
+             )
+    </insert>
+
+    <!-- 창고 위치 정보 조회 -->
+    <select id="selectWhLocByKey" resultType="map">
+        SELECT CO_CD        /* 회사코드 */
+             , LOC_CD       /* 위치코드 */
+             , LOC_NM       /* 위치명 */
+             , USE_YN       /* 사용여부 */
+             , REG_DTM      /* 등록일시 */
+             , REGR_ID      /* 등록자ID */
+             , UPD_DTM      /* 수정일시 */
+             , UPDR_ID      /* 수정자ID */
+          FROM TB_WH_LOC
+         WHERE CO_CD = #{CO_CD}
+           AND LOC_CD = #{LOC_CD}
+    </select>
+
+    <!-- 동적 조건 조회 -->
+    <select id="selectList" resultType="map">
+        SELECT CO_CD        /* 회사코드 */
+             , LOC_CD       /* 위치코드 */
+             , LOC_NM       /* 위치명 */
+             , USE_YN       /* 사용여부 */
+             , REG_DTM      /* 등록일시 */
+             , REGR_ID      /* 등록자ID */
+             , UPD_DTM      /* 수정일시 */
+             , UPDR_ID      /* 수정자ID */
+          FROM TB_WH_LOC
+        <where>
+           AND CO_CD = #{CO_CD}
+          <if test="LOC_CD != null and LOC_CD != ''">
+           AND LOC_CD LIKE CONCAT(#{LOC_CD}, '%')
+          </if>
+          <if test="LOC_NM != null and LOC_NM != ''">
+           AND LOC_NM LIKE CONCAT('%', #{LOC_NM}, '%')
+          </if>
+          <if test="USE_YN != null and USE_YN != '' and !USE_YN.equalsIgnoreCase(' ')">
+           AND USE_YN = #{USE_YN}
+          </if>
+        </where>
+         ORDER BY LOC_CD
+        <if test="OFFSET != null and LIMIT != null">
+         LIMIT #{OFFSET}, #{LIMIT}
+        </if>
+    </select>
+
+    <!-- 창고 위치 정보 수정 -->
+    <update id="updateWhLoc">
+        UPDATE TB_WH_LOC
+           SET LOC_NM  = #{LOC_NM}      /* 위치명 */
+             , USE_YN  = #{USE_YN}      /* 사용여부 */
+             , UPD_DTM = NOW()          /* 수정일시 */
+             , UPDR_ID = #{UPDR_ID}     /* 수정자ID */
+         WHERE CO_CD   = #{CO_CD}
+           AND LOC_CD  = #{LOC_CD}
+    </update>
+
+    <!-- 창고 위치 정보 삭제 -->
+    <delete id="deleteWhLoc">
+        DELETE
+          FROM TB_WH_LOC
+         WHERE CO_CD  = #{CO_CD}
+           AND LOC_CD = #{LOC_CD}
+    </delete>
+
+    <!-- 창고 위치 사용 여부 업데이트 -->
+    <update id="updateWhLocUseYn">
+        UPDATE TB_WH_LOC
+           SET USE_YN  = #{USE_YN}      /* 사용여부 */
+             , UPD_DTM = NOW()          /* 수정일시 */
+             , UPDR_ID = #{UPDR_ID}     /* 수정자ID */
+         WHERE CO_CD   = #{CO_CD}
+           AND LOC_CD  = #{LOC_CD}
+    </update>
+
+    <!-- 창고 위치명 업데이트 -->
+    <update id="updateWhLocNm">
+        UPDATE TB_WH_LOC
+           SET LOC_NM  = #{LOC_NM}      /* 위치명 */
+             , UPD_DTM = NOW()          /* 수정일시 */
+             , UPDR_ID = #{UPDR_ID}     /* 수정자ID */
+         WHERE CO_CD   = #{CO_CD}
+           AND LOC_CD  = #{LOC_CD}
+    </update>
+
+</mapper>

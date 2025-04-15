@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ItemCdMgmt">
+
+    <!-- 품목 코드 정보 생성 -->
+    <insert id="insertItemCd">
+        INSERT /* ItemCdMgmt.insertItemCd : 품목 코드 정보 생성 */
+          INTO TB_ITM_CD
+             ( CO_CD          /* 회사코드 */
+             , ITEM_NO        /* 품목번호 */
+             , ITEM_NM        /* 품목명 */
+             , ITEM_ABBR      /* 품목약어명 */
+             , LAST_PUR_DT    /* 최종매입일자 */
+             , UNIT_GCD       /* 단위구분코드 */
+             , BOX_QTY        /* 박스수량 */
+             , CUST_CD        /* 거래처코드 */
+             , PUR_PRC        /* 매입단가 */
+             , OUT_PRC        /* 출고단가 */
+             , SAL_PRC        /* 판매단가 */
+             , ITEM_LOC_CD    /* 품목위치코드 */
+             , STK_QTY        /* 재고수량 */
+             , STK_YN         /* 재고여부 */
+             , STK_ADJ_DT     /* 재고조정일자 */
+             , TAX_YN         /* 과세여부 */
+             , PRC_APLY_GCD   /* 단가적용구분코드 */
+             , ITEM_ALIAS     /* 품목별칭명 */
+             , STK_PER        /* 재고기간 */
+             , ORD_PER        /* 발주기간 */
+             , PUR_PER        /* 매입기간 */
+             , EXP_PER        /* 유통기한 */
+             , SAL_STOP_YN    /* 판매중지여부 */
+             , SAL_STOP_DTM   /* 판매중지일시 */
+             , OUT_MRGN_RT    /* 출고마진율 */
+             , DC_MRGN_RT     /* 할인마진율 */
+             , SAL_MRGN_RT    /* 판매마진율 */
+             , ITEM_GRP_NM    /* 품목그룹명 */
+             , BARCODE        /* 바코드 */
+             , BARCODE_SUB    /* 바코드SUB */
+             , REG_DTM        /* 등록일시 */
+             , REGR_ID        /* 등록자ID */
+             , UPD_DTM        /* 수정일시 */
+             , UPDR_ID        /* 수정자ID */
+             )
+        VALUES
+             ( #{CO_CD}
+             , (SELECT LPAD(IFNULL(MAX(CAST(ITEM_NO AS DOUBLE)),0)+1, 15, '0') AS ITEM_NO
+                  FROM TB_ITM_CD
+                 WHERE CO_CD = #{CO_CD}
+               )
+             , #{ITEM_NM}
+             , #{ITEM_ABBR}
+             , NULL                      /* LAST_PUR_DT :: 최종매입일자 :: 생성시 NULL */
+             , #{UNIT_GCD}
+             , #{BOX_QTY}
+             , #{CUST_CD}
+             , #{PUR_PRC}
+             , #{OUT_PRC}
+             , #{SAL_PRC}
+             , CASE WHEN #{ITEM_LOC_CD} = 'SEL' THEN '' END
+             , #{STK_QTY}
+             , 'Y'                       /* STK_YN       :: 재고여부 :: Y:재고관리, N:재고관리안함 */
+             , NULL                      /* STK_ADJ_DT   :: 재고조정일자 :: 생성시 NULL */
+             , IFNULL(#{TAX_YN}, 'N')    /* TAX_YN       :: 과세여부 :: Y:과세, N:비과세 */
+             , #{PRC_APLY_GCD}
+             , #{ITEM_ALIAS}
+             , #{STK_PER}
+             , #{ORD_PER}
+             , #{PUR_PER}
+             , #{EXP_PER}
+             , 'N'                       /* SAL_STOP_YN  :: 판매중지여부 :: Y:판매중지, N:판매 */
+             , NULL                      /* SAL_STOP_DTM :: 판매중일일시 :: 생성시 NULL */
+             , #{OUT_MRGN_RT}
+             , #{DC_MRGN_RT}
+             , #{SAL_MRGN_RT}
+             , #{ITEM_GRP_NM}
+             , #{BARCODE}
+             , NULL                      /* BARCODE_SUB  :: 바코드SUB :: 생성시 NULL */
+             , NOW()
+             , #{USR_ID}
+             , NOW()
+             , #{USR_ID}
+             )
+    </insert>
+
+    <!-- 품목 코드 정보 수정 -->
+    <update id="updateItemCd">
+        UPDATE /* ItemCdMgmt.updateItemCd - 1 : 품목 코드 정보 수정 */
+               TB_ITM_CD
+           SET ITEM_NM      = #{ITEM_NM}         /* 품목명 */
+             , ITEM_ABBR    = #{ITEM_ABBR}       /* 품목약어명 */
+             /* , LAST_PUR_DT  = LAST_PUR_DT  */       /* 최종매입일자 */
+             , UNIT_GCD     = #{UNIT_GCD}        /* 단위구분코드 */
+             , BOX_QTY      = #{BOX_QTY}         /* 박스수량 */
+             , CUST_CD      = #{CUST_CD}         /* 거래처코드 */
+             , PUR_PRC      = #{PUR_PRC}         /* 매입단가 */
+             , OUT_PRC      = #{OUT_PRC}         /* 출고단가 */
+             , SAL_PRC      = #{SAL_PRC}         /* 판매단가 */
+             , ITEM_LOC_CD  = CASE WHEN #{ITEM_LOC_CD} = 'SEL' THEN '' END     /* 품목위치코드 */
+             /* , STK_QTY      = STK_QTY      */       /* 재고수량 */
+             /* , STK_YN       = STK_YN       */       /* 재고여부 */
+             /* , STK_ADJ_DT   = STK_ADJ_DT   */       /* 재고조정일자 */
+             , TAX_YN       = #{TAX_YN}          /* 과세여부 */
+             , PRC_APLY_GCD = #{PRC_APLY_GCD}    /* 단가적용구분코드 */
+             , ITEM_ALIAS   = #{ITEM_ALIAS}      /* 품목별칭명 */
+             , STK_PER      = #{STK_PER}         /* 재고기간 */
+             , ORD_PER      = #{ORD_PER}         /* 발주기간 */
+             , PUR_PER      = #{PUR_PER}         /* 매입기간 */
+             , EXP_PER      = #{EXP_PER}         /* 유통기한 */
+             /* , SAL_STOP_YN  = SAL_STOP_YN  */       /* 판매중지여부 */
+             /* , SAL_STOP_DTM = SAL_STOP_DTM */       /* 판매중지일시 */
+             , OUT_MRGN_RT  = #{OUT_MRGN_RT}     /* 출고마진율 */
+             , DC_MRGN_RT   = #{DC_MRGN_RT}      /* 할인마진율 */
+             , SAL_MRGN_RT  = #{SAL_MRGN_RT}     /* 판매마진율 */
+             , ITEM_GRP_NM  = #{ITEM_GRP_NM}     /* 품목그룹명 */
+             , BARCODE      = #{BARCODE}         /* 바코드 */
+             /* , BARCODE_SUB  = BARCODE_SUB  */       /* 바코드SUB */
+             , UPD_DTM      = NOW()              /* 수정일시 */
+             , UPDR_ID      = #{USR_ID}          /* 수정자ID */
+         WHERE CO_CD        = #{CO_CD}
+           AND ITEM_NO      = #{ITEM_NO}
+        ;
+
+        UPDATE /* ItemCdMgmt.updateItemCd - 2 : 거래처품목 품목 정보 수정 */
+               TB_CUST_ITM                    /* 거래처품목 */
+           SET ITEM_NM   = #{ITEM_NM}         /* 품목명 */
+             , ITEM_ABBR = #{ITEM_ABBR}       /* 품목약어명 */
+         WHERE CO_CD     = #{CO_CD}
+           AND ITEM_NO   = #{ITEM_NO}
+        ;
+
+        UPDATE /* ItemCdMgmt.updateItemCd - 3 : 판매전표상세정보 품목 정보 수정 */
+               TB_SALE_DTL
+           SET ITEM_NM   = #{ITEM_NM}         /* 품목명 */
+             , ITEM_ABBR = #{ITEM_ABBR}       /* 품목약어명 */
+         WHERE CO_CD     = #{CO_CD}
+           AND ITEM_NO   = #{ITEM_NO}
+        ;
+    </update>
+
+    <!-- 품목 코드 정보 조회 -->
+    <select id="selectItemCdByKey" resultType="map">
+        SELECT /* ItemCdMgmt.selectItemCdByKey : 품목 코드 정보 조회 */
+               CO_CD          /* 회사코드 */
+             , ITEM_NO        /* 품목번호 */
+             , ITEM_NM        /* 품목명 */
+             , ITEM_ABBR      /* 품목약어명 */
+             , LAST_PUR_DT    /* 최종매입일자 */
+             , UNIT_GCD       /* 단위구분코드 */
+             , BOX_QTY        /* 박스수량 */
+             , CUST_CD        /* 거래처코드 */
+             , PUR_PRC        /* 매입단가 */
+             , OUT_PRC        /* 출고단가 */
+             , SAL_PRC        /* 판매단가 */
+             , ITEM_LOC_CD    /* 품목위치코드 */
+             , STK_QTY        /* 재고수량 */
+             , STK_YN         /* 재고여부 */
+             , STK_ADJ_DT     /* 재고조정일자 */
+             , TAX_YN         /* 과세여부 */
+             , PRC_APLY_GCD   /* 단가적용구분코드 */
+             , ITEM_ALIAS     /* 품목별칭명 */
+             , STK_PER        /* 재고기간 */
+             , ORD_PER        /* 발주기간 */
+             , PUR_PER        /* 매입기간 */
+             , EXP_PER        /* 유통기한 */
+             , SAL_STOP_YN    /* 판매중지여부 */
+             , SAL_STOP_DTM   /* 판매중지일시 */
+             , OUT_MRGN_RT    /* 출고마진율 */
+             , DC_MRGN_RT     /* 할인마진율 */
+             , SAL_MRGN_RT    /* 판매마진율 */
+             , ITEM_GRP_NM    /* 품목그룹명 */
+             , BARCODE        /* 바코드 */
+             , BARCODE_SUB    /* 바코드SUB */
+             , REG_DTM        /* 등록일시 */
+             , REGR_ID        /* 등록자ID */
+             , UPD_DTM        /* 수정일시 */
+             , UPDR_ID        /* 수정자ID */
+          FROM TB_ITM_CD
+         WHERE CO_CD   = #{CO_CD}
+           AND ITEM_NO = #{ITEM_NO}
+    </select>
+
+    <!-- 동적 조건 조회 -->
+    <select id="selectList" resultType="map">
+        SELECT /* ItemCdMgmt.selectList : 품목 목록 조회 */
+               '' TRANS                                                       /* 0:플래그 */
+             , A.ITEM_NO                                                      /* 1:품목코드 */
+             , A.ITEM_NM                                                      /* 2:품목명 */
+             , A.ITEM_ABBR                                                    /* 3:약어 */
+             , A.UNIT_GCD                                                     /* 4:단위 */
+             , A.BOX_QTY                                                      /* 5:B수량 */
+             , A.PUR_PRC                                                      /* 6:구매단가 */
+             , A.OUT_PRC                                                      /* 7:출고단가 */
+             , A.SAL_PRC                                                      /* 8:판매단가 */
+        --     , B.CUST_NM                                                      /* 9:구매처 */
+             , CASE WHEN A.ITEM_LOC_CD = ''
+                    THEN 'SEL'
+                    ELSE IFNULL(A.ITEM_LOC_CD, 'SEL')
+               END                                        AS ITEM_LOC_CD      /* 10:창고위치 */
+        --     , IFNULL(B.CUST_CD, '')                      AS CUST_CD          /* 11:거래처코드 */
+             , IFNULL(A.TAX_YN, 'N')                      AS TAX_YN           /* 12:과세여부(Y:과세, N:비과세) */
+             , IFNULL(A.PRC_APLY_GCD, '1')                AS PRC_APLY_GCD     /* 13:단가적용구분(1:거래치판매단가, 2:품목판매단가) */
+             , IFNULL(A.SAL_STOP_YN, 'N')                 AS SAL_STOP_YN      /* 14:사용(판매중지여부 :: Y:판매중지, N:판매)*/
+             , IFNULL(A.ITEM_ALIAS, '')                   AS ITEM_ALIAS       /* 15:별칭 */
+             , IFNULL(A.STK_PER, 0)                       AS STK_PER          /* 16:재고기간 */
+             , IFNULL(A.ORD_PER, 0)                       AS ORD_PER          /* 17:발주기간 */
+             , IFNULL(A.PUR_PER, 0)                       AS PUR_PER          /* 18:매입기간 */
+             , IFNULL(A.EXP_PER, 0)                       AS EXP_PER          /* 19:유통기한 */
+             , IFNULL(A.OUT_MRGN_RT, 0.0)                 AS OUT_MRGN_RT      /* 20:출고마진 */
+             , IFNULL(A.DC_MRGN_RT, 0.0)                  AS DC_MRGN_RT       /* 21:할인마진 */
+             , IFNULL(A.SAL_MRGN_RT, 0.0)                 AS SAL_MRGN_RT      /* 22:판매마진 */
+             , IFNULL(A.ITEM_GRP_NM, '')                  AS ITEM_GRP_NM      /* 23:품목그룹명 */
+             , IFNULL(CASE WHEN A.STK_YN = 'Y'                                /* (재고여부 :: Y:재고관리, N:재고관리안함) */
+                           THEN C.STK_QTY
+                      END, NULL)                          AS STK_QTY          /* 24:현재고량 */
+             , IFNULL(A.BARCODE, '')                      AS BARCODE          /* 25:바코드 */
+             , A.LAST_PUR_DT                              AS LAST_PUR_DT      /* 26:최종매입일자 */
+             , A.SAL_STOP_DTM                             AS SAL_STOP_DTM     /* 27:판매중지일시 */
+        FROM TB_ITM_CD A       /* 품목코드정보 */
+      --       LEFT JOIN TB_CUST_INF B     /* 거래처정보 */
+      --            ON A.CO_CD   = B.CO_CD
+      --           AND A.CUST_CD = B.CUST_CD
+             LEFT JOIN (
+                        SELECT X.CO_CD
+                             , X.ITEM_NO
+                             , X.STK_CLS_DT
+                             , CASE WHEN X.STK_QTY = 0
+                                    THEN NULL
+                                    ELSE X.STK_QTY
+                               END STK_QTY
+                          FROM TB_ITM_STK X
+                         WHERE ( X.CO_CD
+                               , X.ITEM_NO
+                               , X.STK_CLS_DT) IN (
+                                                   SELECT X1.CO_CD
+                                                        , X1.ITEM_NO
+                                                        , MAX(X1.STK_CLS_DT) AS STK_CLS_DT
+                                                     FROM TB_ITM_STK X1
+                                                    WHERE X1.CO_CD = '0000000000'
+                                                    GROUP BY X1.CO_CD
+                                                           , X1.ITEM_NO
+                                                  )
+                           AND X.STK_QTY != 0  /* 재고수량이 0이 아닌 품목만 */
+                       ) C
+                    ON A.CO_CD   = C.CO_CD
+                   AND A.ITEM_NO = C.ITEM_NO
+        <where>
+            AND A.CO_CD = #{CO_CD}
+          <if test="ITEM_NM != null and ITEM_NM != ''">
+            AND A.ITEM_NM LIKE CONCAT(#{ITEM_NM}, '%')
+          </if>
+          <if test="ITEM_ABBR != null and ITEM_ABBR != ''">
+            AND A.ITEM_ABBR = #{ITEM_ABBR}
+          </if>
+          <if test="CUST_NM != null and CUST_NM != ''">
+            AND B.CUST_NM = CONCAT(#{CUST_NM}, '%')
+          </if>
+          <if test="SAL_STOP_YN != null and SAL_STOP_YN != '' and !SAL_STOP_YN.equalsIgnoreCase(' ')">
+            AND A.SAL_STOP_YN = #{SAL_STOP_YN}
+          </if>
+        </where>
+          ORDER BY A.SAL_STOP_YN ASC
+                 , A.ITEM_NM ASC
+        <if test="OFFSET != null and LIMIT != null">
+          LIMIT #{OFFSET}, #{LIMIT}
+        </if>
+    </select>
+
+
+
+    <!-- ======================================================================== -->
+    <!-- 폼목 삭제 처리 시작 -->
+    <!-- ======================================================================== -->
+    <!-- 품목 판매 중지 상태 업데이트 -->
+    <update id="updateItemCd_SaleStopY">
+        UPDATE /* ItemCdMgmt.updateItemCd_SaleStopY : 품목 판매 중지 상태 업데이트 */
+               TB_ITM_CD
+           SET SAL_STOP_YN = 'Y'                          /* 판매중지여부 :: Y:판매중지, N:판매 */
+             , SAL_STOP_DTM	= NOW()                       /* 판매중지일시 */
+             , UPD_DTM      = NOW()                       /* 수정일시 */
+             , UPDR_ID      = #{USR_ID}                   /* 수정자ID */
+         WHERE CO_CD        = #{CO_CD}
+           AND ITEM_NO      = #{ITEM_NO}
+    </update>
+
+    <!-- 거래처품목 판매 품목 건수 조회 -->
+    <select id="selectCustItem_SaleStopN" parameterType="map" resultType="map">
+        SELECT /* ItemCdMgmt.selectCustItem_SaleStopN : 거래처품목 판매 품목 건수 조회 */
+               COUNT(*) AS CNT
+          FROM TB_CUST_ITM
+         WHERE CO_CD       = #{CO_CD}
+           AND ITEM_NO     = #{ITEM_NO}
+           AND SAL_STOP_YN = 'N'                          /* 판매중지여부 :: Y:판매중지, N:판매 */
+    </select>
+
+    <!-- 거래처품목 판매 중지 상태 업데이트 -->
+    <update id="updateCustItem_SaleStopY">
+        UPDATE /* ItemCdMgmt.updateCustItem_SaleStopY : 거래처품목 판매 중지 상태 업데이트 */
+               TB_CUST_ITM
+           SET SAL_STOP_YN  = 'Y'                          /* 판매중지여부 :: Y:판매중지, N:판매 */
+             , SAL_STOP_DTM	= NOW()                        /* 판매중지일시 */
+             , UPD_DTM      = NOW()                        /* 수정일시 */
+             , UPDR_ID      = #{USR_ID}                    /* 수정자ID */
+         WHERE CO_CD        = #{CO_CD}
+           AND ITEM_NO      = #{ITEM_NO}
+    </update>
+
+    <!-- 판매전표상세정보 품목 조회 -->
+    <select id="selectSaleDtl" parameterType="map" resultType="map">
+        SELECT /* ItemCdMgmt.selectSaleDtl : 판매전표상세정보 품목 조회 */
+               SAL_DT
+             , CUST_CD
+             , RTN_YN
+             , EPI_NO
+             , SAL_USR_ID
+          FROM TB_SALE_DTL
+         WHERE CO_CD   = #{CO_CD}
+           AND ITEM_NO = #{ITEM_NO}
+           AND SAL_DT  = DATE_FORMAT(NOW(), '%Y%m%d')
+    </select>
+
+    <!-- 판매전표정보 삭제 -->
+    <delete id="deleteSale">
+        DELETE /* ItemCdMgmt.deleteSale : 판매전표정보 삭제 */
+          FROM TB_SALE
+         WHERE CO_CD      = #{CO_CD}
+           AND SAL_DT     = #{SAL_DT}
+           AND CUST_CD    = #{CUST_CD}
+           AND RTN_YN     = #{RTN_YN}
+           AND EPI_NO     = #{EPI_NO}
+           AND SAL_USR_ID = #{SAL_USR_ID}
+    </delete>
+
+    <!-- 판매전표상세정보 품목 삭제 -->
+    <delete id="deleteSaleDtl">
+        DELETE /* ItemCdMgmt.deleteSaleDtl : 판매전표상세정보 품목 삭제 */
+          FROM TB_SALE_DTL
+         WHERE CO_CD   = #{CO_CD}
+           AND ITEM_NO = #{ITEM_NO}
+    </delete>
+    <!-- ======================================================================== -->
+    <!-- 폼목 삭제 처리 종료 -->
+    <!-- ======================================================================== -->
+
+
+
+    <!-- 품목 재고 수량 업데이트 -->
+    <update id="updateStock">
+        UPDATE /* ItemCdMgmt.updateStock : 품목 재고 수량 업데이트 */
+               TB_ITM_CD
+           SET STK_QTY     = #{STK_QTY}                   /* 재고수량 */
+             , STK_ADJ_DT  = DATE_FORMAT(NOW(), '%Y%m%d') /* 재고조정일자 */
+             , UPD_DTM     = NOW()                        /* 수정일시 */
+             , UPDR_ID     = #{USR_ID}                    /* 수정자ID */
+         WHERE CO_CD       = #{CO_CD}
+           AND ITEM_NO     = #{ITEM_NO}
+    </update>
+
+    <!-- 품목 단가 정보 업데이트 -->
+    <update id="updatePrice">
+        UPDATE /* ItemCdMgmt.updatePrice : 품목 단가 정보 업데이트 */
+               TB_ITM_CD
+           SET PUR_PRC     = #{PUR_PRC}                   /* 매입단가 */
+             , OUT_PRC     = #{OUT_PRC}                   /* 출고단가 */
+             , SAL_PRC     = #{SAL_PRC}                   /* 판매단가 */
+             , LAST_PUR_DT = DATE_FORMAT(NOW(), '%Y%m%d') /* 최종매입일자 */
+             , UPD_DTM     = NOW()                        /* 수정일시 */
+             , UPDR_ID     = #{USR_ID}                    /* 수정자ID */
+         WHERE CO_CD       = #{CO_CD}
+           AND ITEM_NO     = #{ITEM_NO}
+    </update>
+
+    <!-- 품목 코드 정보 삭제 -->
+    <delete id="deleteItemCd">
+        DELETE /* ItemCdMgmt.deleteItemCd : 품목 코드 정보 삭제 */
+          FROM TB_ITM_CD
+         WHERE CO_CD   = #{CO_CD}
+           AND ITEM_NO = #{ITEM_NO}
+    </delete>
+
+</mapper>

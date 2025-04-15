@@ -1,0 +1,89 @@
+########################################################################
+#  주요 설정 설명
+########################################################################
+#  spring.datasource.url:
+#    MySQL 데이터베이스 연결 URL을 지정합니다.
+#    your_database_name 부분에 사용할 데이터베이스 이름을 입력합니다.
+#  useSSL=false: SSL 사용 안 함 (로컬 개발 환경에서 사용).
+#  serverTimezone=UTC: 서버 시간대를 UTC로 설정.
+#  characterEncoding=UTF-8: 문자 인코딩을 UTF-8로 설정.
+#  spring.datasource.username:
+#    MySQL 데이터베이스 사용자 이름을 입력합니다.
+#  spring.datasource.password:
+#    MySQL 데이터베이스 비밀번호를 입력합니다.
+#  spring.datasource.driver-class-name:
+#    MySQL JDBC 드라이버 클래스 이름을 지정합니다.
+#  spring.jpa.hibernate.ddl-auto:
+#  update: 엔티티 클래스 변경 시 DB 스키마를 자동으로 업데이트합니다.
+#  create: 애플리케이션 시작 시 DB 스키마를 새로 생성합니다.
+#  none: 자동 업데이트를 비활성화합니다.
+#  spring.jpa.show-sql:
+#    실행된 SQL 쿼리를 콘솔에 출력합니다. (개발 환경에서 유용)
+#  spring.jpa.properties.hibernate.format_sql:
+#    SQL 쿼리를 보기 좋게 포맷팅하여 출력합니다.
+#  server.port:
+#    애플리케이션이 사용할 포트를 지정합니다. (기본값: 8080)
+########################################################################
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/fdms?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8    #&allowMultiQueries=true
+#    url: jdbc:mysql://localhost:3306/fdms
+    username: fdms_dml
+    password: fdms
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      maximum-pool-size: 10 # Connection pool 최대 크기
+      minimum-idle: 2      # Connection pool 최소 유지 크기
+      idle-timeout: 30000  # Idle connection 타임아웃 (ms)
+      max-lifetime: 1800000 # Connection 최대 수명 (ms)
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update # DB 스키마 자동 업데이트 (create, update, none 등)
+    properties:
+      hibernate:
+        show-sql: true   # 실행된 SQL 쿼리를 로그로 출력
+        format_sql: true # SQL 쿼리를 보기 좋게 포맷팅
+        use_sql_comments: true # 주석 표시하기
+        hightlight_sql: true
+  sql:
+    init:
+      mode: always # 애플리케이션 시작 시 SQL 스크립트 실행 (필요한 경우)
+  # 트랜잭션 타임아웃 설정 (선택 사항)
+  transaction:
+    default-timeout: 30 # 기본 타임아웃 30초
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        orm.jdbc.bind: TRACE
+      # MyBatis SQL 로그 출력
+      mybatis: DEBUG
+    java:
+      sql:
+        Connection: DEBUG
+        Statement: DEBUG
+        PreparedStatement: DEBUG
+    # 파라미터 값까지 상세히 출력 (HikariCP 사용 시)
+    com:
+      zaxxer:
+        hikari: TRACE
+        hikari.HikariConfig: DEBUG
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 8080
+#  servlet:
+#    context-path: /api

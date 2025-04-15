@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BasLrgCd">
+
+    <!-- 동적 조건 조회 -->
+    <select id="selectList" parameterType="map" resultType="map">
+        SELECT LRG_CD
+             , LRG_NM
+             , USE_YN
+             , DATE_FORMAT(REG_DTM, '%Y-%m-%d %H:%i:%s') AS REG_DTM
+             , REGR_ID
+             , DATE_FORMAT(UPD_DTM, '%Y-%m-%d %H:%i:%s') AS UPD_DTM
+             , UPDR_ID
+          FROM TB_BAS_LRG_CD
+        <where>
+          <if test="LRG_CD != null and LRG_CD != ''">
+           AND LRG_CD LIKE CONCAT(#{LRG_CD}, '%')
+          </if>
+          <if test="LRG_NM != null and LRG_NM != ''">
+           AND LRG_NM LIKE CONCAT('%', #{LRG_NM}, '%')
+          </if>
+          <if test="USE_YN != null and USE_YN != '' and !USE_YN.equalsIgnoreCase(' ')">
+           AND USE_YN = #{USE_YN}
+          </if>
+        </where>
+         ORDER BY LRG_CD
+        <if test="OFFSET != null and LIMIT != null">
+         LIMIT #{OFFSET}, #{LIMIT}
+        </if>
+    </select>
+
+    <!-- 단건 조회 -->
+    <select id="select" parameterType="map" resultType="map">
+        SELECT LRG_CD
+             , LRG_NM
+             , USE_YN
+             , DATE_FORMAT(REG_DTM, '%Y-%m-%d %H:%i:%s') AS REG_DTM
+             , REGR_ID
+             , DATE_FORMAT(UPD_DTM, '%Y-%m-%d %H:%i:%s') AS UPD_DTM
+             , UPDR_ID
+          FROM TB_BAS_LRG_CD
+         WHERE LRG_CD = #{LRG_CD}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="map">
+        INSERT
+          INTO TB_BAS_LRG_CD
+             ( LRG_CD
+             , LRG_NM
+             , USE_YN
+             , REG_DTM
+             , REGR_ID
+             , UPD_DTM
+             , UPDR_ID
+             )
+        VALUES
+             ( #{LRG_CD}
+             , #{LRG_NM}
+             , #{USE_YN}
+             , NOW()
+             , #{USR_ID}
+             , NOW()
+             , #{USR_ID}
+             )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="map">
+        UPDATE TB_BAS_LRG_CD
+           SET LRG_NM  = #{LRG_NM}
+             , USE_YN  = #{USE_YN}
+             , UPD_DTM = NOW()
+             , UPDR_ID = #{USR_ID}
+         WHERE LRG_CD  = #{LRG_CD}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="map">
+        DELETE
+          FROM TB_BAS_LRG_CD
+         WHERE LRG_CD = #{LRG_CD}
+    </delete>
+
+    <!-- 논리 삭제 -->
+    <update id="delete_log" parameterType="map">
+        UPDATE TB_BAS_LRG_CD
+           SET USE_YN  = 'N'
+             , UPD_DTM = NOW()
+             , UPDR_ID = #{USR_ID}
+         WHERE LRG_CD  = #{LRG_CD}
+    </update>
+
+</mapper>

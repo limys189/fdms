@@ -1,0 +1,818 @@
+/* 기본 레이아웃 */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  height: 1024px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #ddd; /* 테두리 추가 (선택사항) */
+}
+
+.menu-area {
+  height: 40px;
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  /*background-color: #f5f5f5;*/
+  /*border-bottom: 1px solid #ddd;*/
+  /*display: flex;*/
+  /*padding: 0 0;*/ /* 좌우 패딩 추가 */
+}
+
+.content-area {
+  height: 944px; /* 1024px - 102px */
+  overflow: hidden;
+}
+
+.tab-router {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 탭 헤더 컨테이너 스타일 */
+.tab-header-container {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+  /*padding: 0 30px;*/ /* 스크롤 버튼 공간 확보 */
+}
+
+.tab-header-bak {
+  display: flex;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  padding: 0 10px;
+}
+
+/* tab-header 백업 */
+.tab-header {
+  display: flex;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+  /*padding: 0 5px;*/
+  /*overflow-x: auto;*/
+  height: 30px; /* 탭 헤더 높이 고정 */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.tab-header::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* 기존 탭 스타일 유지 */
+.tab-item {
+  padding: 4px 8px;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  /*margin-right: 5px;*/
+  background: #fff;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+}
+
+/* tab-item 백업 */
+.tab-item-bak {
+  padding: 0 20px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  margin-right: 5px;
+  background-color: #f9f9f9;
+  position: relative;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tab-item.active {
+  /*background: #fff;*/
+  background: #B0E0E6;
+  border-bottom: 1px solid #fff;
+  margin-bottom: -1px;
+  font-weight: bold;
+}
+
+.tab-item.active-bak {
+  background-color: white;
+  border-bottom: 1px solid white;
+  margin-bottom: -1px;
+  font-weight: bold;
+}
+
+.tab-close {
+  margin-left: 8px;
+  color: #999;
+}
+
+.tab-close-bak {
+  margin-left: 10px;
+  color: #999;
+  font-size: 18px;
+}
+
+.tab-close:hover {
+  color: #333;
+}
+
+
+/* 스크롤 버튼 스타일 */
+.scroll-button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 25px;
+  background: rgba(245, 245, 245, 0.8);
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.scroll-button.left {
+  left: 0;
+}
+
+.scroll-button.right {
+  right: 25px; /* 전체 닫기 버튼 옆에 위치 */
+}
+
+.scroll-button:hover {
+  background: rgba(221, 221, 221, 0.8);
+}
+
+/* 전체 닫기 버튼 스타일 */
+.close-all-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 25px;
+  background: rgba(245, 245, 245, 0.8);
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.close-all-button:hover {
+  background: rgba(221, 221, 221, 0.8);
+  color: #d32f2f;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-content-bak {
+  height: calc(100% - 40px); /* 탭 헤더 높이 제외 */
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.tab-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: 4px;
+  /*padding: 20px;*/
+  background: #fff;
+}
+
+.menu-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.menu-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+/*
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  cursor: pointer;
+  height: 100%;
+  border-right: 1px solid #ddd;
+}
+
+.menu-item:hover {
+  background-color: #e9e9e9;
+}
+
+.app-container {
+  display: flex;
+}
+*/
+
+
+
+
+/* =============================================================================== */
+/* CommonCodeMgmt.css :: 공통코드관리 */
+/* =============================================================================== */
+/* 공통 컨테이너 스타일 */
+.common-code-container {
+  padding: 6px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.full-width-container {
+  padding: 6px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.half-width-container {
+  padding: 6px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  float: left;
+}
+
+/* 로딩 및 에러 스타일 */
+/*
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+*/
+
+/*
+.error-alert {
+  margin-bottom: 12px;
+}
+*/
+
+
+/* 메인 타이틀 스타일 */
+.main-title {
+  position: relative;
+  padding-left: 4px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0 0 12px 0;
+  color: #333;
+}
+
+.main-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 3px;
+  height: 80%;
+  width: 4px;
+  background-color: #1976d2;
+  border-radius: 2px;
+}
+
+/* 섹션 타이틀 스타일 */
+.section-title {
+  position: relative;
+  padding-left: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #555;
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  height: 80%;
+  width: 3px;
+  background-color: #4caf50;
+  border-radius: 1.5px;
+}
+
+/* 레이아웃 스타일 */
+.management-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.code-management-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.section-fullWidth {
+  width: 100%;
+  min-width: auto; /* 최소 너비 제거 */
+  flex-grow: 0; /* flex-grow 비활성화 */
+}
+
+.left-section-fullWidth {
+  width: 100%;
+  min-width: auto; /* 최소 너비 제거 */
+  flex-grow: 0; /* flex-grow 비활성화 */
+}
+
+.left-section,
+.right-section {
+  width: calc(50% - 4px); /* 8px gap의 절반을 차감 */
+  min-width: auto; /* 최소 너비 제거 */
+  flex-grow: 0; /* flex-grow 비활성화 */
+}
+
+.paper {
+  padding: 6px 6px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),
+              0px 1px 1px 0px rgba(0,0,0,0.14),
+              0px 1px 3px 0px rgba(0,0,0,0.12);
+}
+
+/* 섹션 간격 */
+.search-section {
+  margin-bottom: 12px;
+  background: white;
+}
+
+.data-section {
+  margin-bottom: 12px;
+  /*height: 520px;*/
+}
+
+.detail-section {
+  margin-top: 12px;
+}
+
+/* 그리드 레이아웃 */
+.search-grid,
+.detail-grid {
+  display: flex;
+  flex-direction: column;
+  /*gap: 1px;*/
+}
+
+/* 행 스타일 */
+.search-row,
+.detail-row {
+  /*display: flex;*/
+  width: 100%;
+  /* 임영섭 임시 추가 */  /*border: 1px solid #ddd;*/
+}
+
+.search-row-button,
+.detail-row-button {
+  display: flex;
+  width: 100%;
+}
+
+.data-row-button {
+  display: flex;
+  width: 100%;
+}
+
+/* 필드 스타일 */
+.search-field,
+.detail-field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /*gap: 1px;*/
+  /* 임영섭 임시 추가 */  /*border: 1px solid #ddd;*/
+}
+
+.detail-field {
+  min-width: calc(25% - 9px);
+  /* 임영섭 임시 추가 */  /*border: 1px solid #ddd;*/
+}
+
+/* 폼 요소 스타일 */
+.form-input,
+.form-select {
+  width: calc(100% - 2px);
+  padding: 4px 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* 라벨 스타일 */
+.search-field label,
+.detail-field label {
+  padding: 4px 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 버튼 스타일 */
+button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.search-buttons,
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.reset-btn,
+.new-btn {
+  background: white;
+  border-color: #ddd;
+  color: #333;
+}
+
+/*
+.reset-btn {
+  margin-right: 8px;
+}
+*/
+
+.reset-btn:hover,
+.new-btn:hover {
+  background: #f5f5f5;
+}
+
+.search-btn,
+.save-btn {
+  background: #1976d2;
+  border-color: #1976d2;
+  color: white;
+}
+.search-btn:hover,
+.save-btn:hover {
+  background: #1565c0;
+}
+
+.next-btn {
+  background: #D2D2D2;
+  border-color: #D2D2D2;
+  color: black;
+}
+.next-btn:hover {
+  background: #D2D2D2;
+}
+
+.delete-btn {
+  background: #d32f2f;
+  border-color: #d32f2f;
+  color: white;
+}
+.delete-btn:hover {
+  background: #c62828;
+}
+
+.close-btn {
+  background: #D2D2D2;
+  border-color: #D2D2D2;
+  color: black;
+  margin-left: 12px;
+}
+.close-btn:hover {
+  background: #D2D2D2;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 타이틀/컴포넌트 영역 스타일 */
+.title-area {
+  height:100%;
+  width: 15%;
+  min-width: 15%;
+  display: flex;
+  align-items: center;
+  background: #F2F2F2;
+  /* 임영섭 임시 추가 */  border: 1px solid #ddd;
+}
+
+.title-area label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.component-area {
+  width: 34%;
+  min-width: 34%;
+  flex-grow: 1;
+  padding: 0 2px;
+  /* 임영섭 임시 추가 */  border: 1px solid #ddd;
+}
+
+.title-area-blank {
+  width: 15%;
+  min-width: 15%;
+  /*height:100%;*/
+  display: flex;
+}
+
+.component-area-blank {
+  width: 34%;
+  min-width: 34%;
+  /*height:100%;*/
+  display: flex;
+}
+
+/* 1280px 이하에서의 반응형 스타일 */
+@media (max-width: 1280px) {
+  .code-management-container {
+    flex-wrap: wrap;
+  }
+
+  .left-section,
+  .right-section {
+    width: 100%; /* 모바일에서는 100% 너비 */
+  }
+}
+
+/* 768px 이하에서의 추가 반응형 스타일 */
+@media (max-width: 768px) {
+  .search-field,
+  .detail-field {
+    min-width: 100%;
+  }
+
+  .title-area,
+  .component-area {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+
+
+
+/* 필수 입력 그룹 스타일 */
+/*
+.input-required {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: calc(50% - 8px);
+  margin-bottom: 12px;
+  position: relative;
+}
+*/
+
+/* 빈 필드 스타일 (레이아웃 유지용) */
+/*
+.input-required.blank-field {
+  visibility: hidden;
+}
+*/
+
+/* 필수 표시 마크 */
+.required-mark {
+  color: #d32f2f;
+  font-size: 1.2em;
+  margin-left: 4px;
+}
+
+/* 필수 입력 필드 공통 스타일 */
+.form-input.required,
+.form-select.required {
+  border-left: 3px solid #ff9800;
+  padding-left: 4px;
+}
+
+/* select 박스 전용 스타일 */
+.form-select.required {
+  /*background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23d32f2f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E");*/
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.form-input.required:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* 유효성 피드백 */
+.form-input.required:invalid,
+.form-select.required:invalid {
+  border-color: #d32f2f;
+}
+
+.form-input.required:invalid:focus {
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+.form-select.required:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.form-select.required:invalid:focus {
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+/* 라벨 스타일 */
+/*
+.input-required label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+*/
+
+/* 에러 메시지 */
+/*
+.input-required::after {
+  content: "필수 입력 항목입니다";
+  color: #d32f2f;
+  font-size: 0.75rem;
+  position: absolute;
+  bottom: -18px;
+  left: 20%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+*/
+
+.form-input.required:invalid ~ .input-required::after,
+.form-select.required:invalid ~ .input-required::after {
+  opacity: 1;
+}
+
+/* 입력 모드 시각적 표시 */
+.uppercase-input {
+  text-transform: uppercase;
+}
+
+.uppercase-input:focus {
+  background-color: #f0f8ff;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* 플레이스홀더 힌트 */
+.uppercase-input::placeholder {
+  color: #90caf9;
+  content: "영문 대문자+숫자만 입력";
+}
+/* =============================================================================== */
+
+
+
+/* =============================================================================== */
+/* 화면 조회영역 레이아웃 */
+/* =============================================================================== */
+.search-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.data-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.form-row {
+  height: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 0;
+}
+
+/* 기본 스타일: 4쌍(타이틀 7.5%, 컴포넌트 17.5%) => 총 25%씩 4개 */
+.form-group {
+  height:100%;
+  display: flex;
+  align-items: center;
+  width: 25%; /* 100% / 4쌍 */
+  box-sizing: border-box;
+}
+
+.form-group-title {
+  height:100%;
+  width: 35%; /* 타이틀 영역: 전체의 30% = 7.5% */
+  min-width: 60px;
+  padding: 0 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  background: #F2F2F2;
+  /* 임영섭 임시 추가 */  border: 1px solid #ddd;
+}
+
+.form-group-title label {
+  /*font-weight: bold;*/
+  white-space: nowrap;
+}
+
+.form-group-input {
+  width: 65%; /* 컴포넌트 영역: 전체의 70% = 17.5% */
+  min-width: 65%;
+  flex-grow: 1;
+  /* 임영섭 임시 추가 */  border: 1px solid #ddd;
+}
+
+.form-group-input input,
+.form-group-input select {
+  width: 96%;
+  margin: 4px;
+  padding: 2px 4px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+/* 중간 화면 사이즈: 좌우 640px */
+@media (max-width: 1280px) {
+  .form-group {
+    width: 50%; /* 2쌍씩 */
+  }
+
+  .form-group-title label {
+    width: 35%; /* 타이틀 20% */
+  }
+
+  .form-group-input input {
+    width: 65%; /* 컴포넌트 30% */
+  }
+}
+
+/* 모바일 대응 등 */
+@media (max-width: 768px) {
+  .form-group {
+    width: 100%;
+  }
+
+  .form-group-title label {
+    width: 35%;
+  }
+
+  .form-group-input input {
+    width: 65%;
+  }
+}
+/* =============================================================================== */
+
+
+
+/* =============================================================================== */
+/* Ag-Grid 헤더클래스 */
+/* =============================================================================== */
+.ag-header-cell-label {
+  justify-content: center; /* center, flex-start, flex-end */
+}
+
+.ag-header-left {
+  justify-content: flex-start;
+}
+
+.ag-header-center {
+  justify-content: center;
+}
+
+.ag-header-right {
+  justify-content: flex-end;
+}
+/* =============================================================================== */

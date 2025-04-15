@@ -1,0 +1,7 @@
+<configuration>
+    <settings>
+        <!-- 실행되는 SQL 로그 출력 -->
+        <setting name="logImpl" value="SLF4J"/>
+        <setting name="logPrefix" value="MYBATIS."/>
+    </settings>
+</configuration>

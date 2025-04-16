@@ -93,6 +93,7 @@ const ItemMgmt = () => {
     setGridComboVal,            // 그리드 콤보 공통코드 셋팅
     formatByType,               // 포맷타입
     SmartNumberInput,           // 금액, 백분율 input 라이브러리
+    SmartDateInput,             // 날짜, 일시 display 라이브러리
   } = useContext(GlobalContext);
 
 
@@ -1321,7 +1322,7 @@ const ItemMgmt = () => {
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>품목약어</label>
+                      <label>품목약어 <span className="required-mark">*</span></label>
                     </div>
                     <div className="form-group-input">
                       <input
@@ -1334,7 +1335,7 @@ const ItemMgmt = () => {
                             : setNewItem({ ...newItem, ITEM_ABBR: e.target.value })
                         }
                         maxLength="30"
-                        className="form-input"
+                        className="form-input required"
                         disabled={!isDisabled}
                       />
                     </div>
@@ -1344,21 +1345,12 @@ const ItemMgmt = () => {
                       <label>최종매입일</label>
                     </div>
                     <div className="form-group-input">
-                      {/*
-                      <input
+                      <SmartDateInput
                         ref={fieldRefs.itemCdInfo.LAST_PUR_DT}
-                        type="text"
                         value={selectedItem ? selectedItem.LAST_PUR_DT : newItem.LAST_PUR_DT}
-                        onChange={(e) =>
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, LAST_PUR_DT: e.target.value })
-                            : setNewItem({ ...newItem, LAST_PUR_DT: e.target.value })
-                        }
-                        maxLength="8"
-                        className="form-input"
+                        maxLength="10"
                         disabled
                       />
-                      */}
                     </div>
                   </div>
                 </div>
@@ -1404,9 +1396,8 @@ const ItemMgmt = () => {
                         }
                         maxLength="4"
                         decimalScale={0}
-                        min={0} max={1000}
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        allowDecimal={false}
+                        min={0} max={9999}
                         disabled={!isDisabled}
                         placeholder="박스수량을 입력하세요."
                       />
@@ -1463,20 +1454,20 @@ const ItemMgmt = () => {
                       <label>매입단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.PUR_PRC}
-                        type="number"
                         value={selectedItem ? selectedItem.PUR_PRC : newItem.PUR_PRC}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, PUR_PRC: e.target.value })
-                            : setNewItem({ ...newItem, PUR_PRC: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, PUR_PRC: resValue })
+                            : setNewItem({ ...newItem, PUR_PRC: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="20"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={99999999999999999.999}
                         disabled={!isDisabled}
+                        placeholder="매입단가를 입력하세요."
                       />
                     </div>
                   </div>
@@ -1485,20 +1476,20 @@ const ItemMgmt = () => {
                       <label>출고단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.OUT_PRC}
-                        type="number"
                         value={selectedItem ? selectedItem.OUT_PRC : newItem.OUT_PRC}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, OUT_PRC: e.target.value })
-                            : setNewItem({ ...newItem, OUT_PRC: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, OUT_PRC: resValue })
+                            : setNewItem({ ...newItem, OUT_PRC: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="20"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={99999999999999999.999}
                         disabled={!isDisabled}
+                        placeholder="출고단가를 입력하세요."
                       />
                     </div>
                   </div>
@@ -1507,26 +1498,26 @@ const ItemMgmt = () => {
                       <label>판매단가</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.SAL_PRC}
-                        type="number"
                         value={selectedItem ? selectedItem.SAL_PRC : newItem.SAL_PRC}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, SAL_PRC: e.target.value })
-                            : setNewItem({ ...newItem, SAL_PRC: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, SAL_PRC: resValue })
+                            : setNewItem({ ...newItem, SAL_PRC: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="20"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={99999999999999999.999}
                         disabled={!isDisabled}
+                        placeholder="판매단가를 입력하세요."
                       />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>과세여부</label>
+                      <label>과세여부 <span className="required-mark">*</span></label>
                     </div>
                     <div className="form-group-input">
                       <select
@@ -1554,29 +1545,7 @@ const ItemMgmt = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>재고수량</label>
-                    </div>
-                    <div className="form-group-input">
-                      <input
-                        ref={fieldRefs.itemCdInfo.STK_QTY}
-                        type="number"
-                        value={selectedItem ? selectedItem.STK_QTY : newItem.STK_QTY}
-                        onChange={(e) =>
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, STK_QTY: e.target.value })
-                            : setNewItem({ ...newItem, STK_QTY: e.target.value })
-                        }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
-                        disabled={!isDisabled}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div className="form-group-title">
-                      <label>재고여부</label>
+                      <label>재고여부 <span className="required-mark">*</span></label>
                     </div>
                     <div className="form-group-input">
                       <select
@@ -1600,28 +1569,42 @@ const ItemMgmt = () => {
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
+                      <label>재고수량</label>
+                    </div>
+                    <div className="form-group-input">
+                      <SmartNumberInput
+                        ref={fieldRefs.itemCdInfo.STK_QTY}
+                        value={selectedItem ? selectedItem.STK_QTY : newItem.STK_QTY}
+                        onChange={(resValue) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_QTY: resValue })
+                            : setNewItem({ ...newItem, STK_QTY: resValue })
+                        }
+                        maxLength="10"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={9999999999}
+                        disabled/*={!isDisabled}*/
+                        placeholder="재고수량을 입력하세요."
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="form-group-title">
                       <label>재고조정일자</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartDateInput
                         ref={fieldRefs.itemCdInfo.STK_ADJ_DT}
-                        type="text"
                         value={selectedItem ? selectedItem.STK_ADJ_DT : newItem.STK_ADJ_DT}
-                        onChange={(e) =>
-                          selectedItem
-                            ? setSelectedItem({ ...selectedItem, STK_ADJ_DT: e.target.value })
-                            : setNewItem({ ...newItem, STK_ADJ_DT: e.target.value })
-                        }
                         maxLength="10"
-                        /*className="form-input required"*/
-                        className="form-input"
                         disabled
                       />
                     </div>
                   </div>
                   <div className="form-group">
                     <div className="form-group-title">
-                      <label>단가적용구분</label>
+                      <label>단가적용 <span className="required-mark">*</span></label>
                     </div>
                     <div className="form-group-input">
                       <select
@@ -1652,20 +1635,20 @@ const ItemMgmt = () => {
                       <label>재고기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.STK_PER}
-                        type="number"
                         value={selectedItem ? selectedItem.STK_PER : newItem.STK_PER}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, STK_PER: e.target.value })
-                            : setNewItem({ ...newItem, STK_PER: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, STK_PER: resValue })
+                            : setNewItem({ ...newItem, STK_PER: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={999}
                         disabled={!isDisabled}
+                        placeholder="재고기간을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1674,20 +1657,20 @@ const ItemMgmt = () => {
                       <label>발주기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.ORD_PER}
-                        type="number"
                         value={selectedItem ? selectedItem.ORD_PER : newItem.ORD_PER}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, ORD_PER: e.target.value })
-                            : setNewItem({ ...newItem, ORD_PER: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, ORD_PER: resValue })
+                            : setNewItem({ ...newItem, ORD_PER: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={999}
                         disabled={!isDisabled}
+                        placeholder="발주기간을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1696,20 +1679,20 @@ const ItemMgmt = () => {
                       <label>매입기간</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.PUR_PER}
-                        type="number"
                         value={selectedItem ? selectedItem.PUR_PER : newItem.PUR_PER}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, PUR_PER: e.target.value })
-                            : setNewItem({ ...newItem, PUR_PER: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, PUR_PER: resValue })
+                            : setNewItem({ ...newItem, PUR_PER: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={999}
                         disabled={!isDisabled}
+                        placeholder="매입기간을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1718,20 +1701,20 @@ const ItemMgmt = () => {
                       <label>유통기한</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.EXP_PER}
-                        type="number"
                         value={selectedItem ? selectedItem.EXP_PER : newItem.EXP_PER}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, EXP_PER: e.target.value })
-                            : setNewItem({ ...newItem, EXP_PER: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, EXP_PER: resValue })
+                            : setNewItem({ ...newItem, EXP_PER: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        min={0} max={999}
                         disabled={!isDisabled}
+                        placeholder="유통기한을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1810,18 +1793,14 @@ const ItemMgmt = () => {
                       <label>판매중지일시</label>
                     </div>
                     <div className="form-group-input">
-                      <input
-                        ref={fieldRefs.itemCdInfo.SAL_STOP_DTM}
-                        type="text"
+                      <SmartDateInput
                         value={selectedItem ? selectedItem.SAL_STOP_DTM : newItem.SAL_STOP_DTM}
-                        onChange={(e) =>
+                        onChange={(resDateVal) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, SAL_STOP_DTM: e.target.value })
-                            : setNewItem({ ...newItem, SAL_STOP_DTM: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, SAL_STOP_DTM: resDateVal })
+                            : setNewItem({ ...newItem, SAL_STOP_DTM: resDateVal })
                         }
-                        maxLength="50"
-                        /*className="form-input required"*/
-                        className="form-input"
+                        maxLength="20"
                         disabled
                       />
                     </div>
@@ -1835,20 +1814,21 @@ const ItemMgmt = () => {
                       <label>출고마진율</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.OUT_MRGN_RT}
-                        type="number"
-                        value={selectedItem ? selectedItem.OUT_MRGN_RT : newItem.BOX_QTY}
-                        onChange={(e) =>
+                        value={selectedItem ? selectedItem.OUT_MRGN_RT : newItem.OUT_MRGN_RT}
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, OUT_MRGN_RT: e.target.value })
-                            : setNewItem({ ...newItem, OUT_MRGN_RT: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, OUT_MRGN_RT: resValue })
+                            : setNewItem({ ...newItem, OUT_MRGN_RT: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        usePercent={true}
+                        min={0} max={100}
                         disabled={!isDisabled}
+                        placeholder="출고마진율을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1857,20 +1837,21 @@ const ItemMgmt = () => {
                       <label>할인마진율</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.DC_MRGN_RT}
-                        type="number"
-                        value={selectedItem ? selectedItem.DC_MRGN_RT : newItem.BOX_QTY}
-                        onChange={(e) =>
+                        value={selectedItem ? selectedItem.DC_MRGN_RT : newItem.DC_MRGN_RT}
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, DC_MRGN_RT: e.target.value })
-                            : setNewItem({ ...newItem, DC_MRGN_RT: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, DC_MRGN_RT: resValue })
+                            : setNewItem({ ...newItem, DC_MRGN_RT: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        usePercent={true}
+                        min={0} max={100}
                         disabled={!isDisabled}
+                        placeholder="할인마진율을 입력하세요."
                       />
                     </div>
                   </div>
@@ -1879,20 +1860,21 @@ const ItemMgmt = () => {
                       <label>판매마진율</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.SAL_MRGN_RT}
-                        type="number"
                         value={selectedItem ? selectedItem.SAL_MRGN_RT : newItem.SAL_MRGN_RT}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, SAL_MRGN_RT: e.target.value })
-                            : setNewItem({ ...newItem, SAL_MRGN_RT: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, SAL_MRGN_RT: resValue })
+                            : setNewItem({ ...newItem, SAL_MRGN_RT: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
-                        className="form-input"
-                        style={{ textAlign: 'right' }}
+                        maxLength="3"
+                        decimalScale={0}
+                        allowDecimal={false}
+                        usePercent={true}
+                        min={0} max={100}
                         disabled={!isDisabled}
+                        placeholder="판매마진율을 입력하세요."
                       />
                     </div>
                   </div>

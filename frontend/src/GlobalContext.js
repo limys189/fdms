@@ -4,8 +4,11 @@ import { callPostApi }   from "services/apiService";            // REST-API 서�
 import { useValidation } from 'utils/useValidation';            // 유효성 검사 커스텀 훅
 import StatusPopup       from 'components/StatusPopup';         // 로딩 및 에러 표시 팝업
 import { confirmX }      from "components/WindowsConfirm";      // confirm 다이얼로그 라이브러리
-import { themeQuartz }   from 'ag-grid-community';
-import { formatByType }  from 'utils/formatters';
+import { themeQuartz }   from 'ag-grid-community';              // 그리드 테마
+import { formatByType }  from 'utils/formatters';               // 포맷타입
+import SmartNumberInput  from 'libs/SmartNumberInput';          // 금액, 백분율 input 라이브러리
+import SmartDateInput    from 'libs/SmartDateInput';            // 날짜, 일시 input 라이브러리
+
 
 
 export const GlobalContext = createContext();
@@ -83,6 +86,9 @@ export const GlobalProvider = ({ children }) => {
 
       setGridComboVal,          // 그리드 콤보 공통코드 셋팅
       formatByType,             // 포맷타입
+
+      SmartNumberInput,         // 금액, 백분율 input 라이브러리
+      SmartDateInput,           // 날짜, 일시 display 라이브러리
 
     }}>
       {children}

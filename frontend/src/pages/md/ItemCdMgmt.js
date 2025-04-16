@@ -92,6 +92,7 @@ const ItemMgmt = () => {
     confirmX,                   // confirm 다이얼로그 라이브러리
     setGridComboVal,            // 그리드 콤보 공통코드 셋팅
     formatByType,               // 포맷타입
+    SmartNumberInput,           // 금액, 백분율 input 라이브러리
   } = useContext(GlobalContext);
 
 
@@ -1343,6 +1344,7 @@ const ItemMgmt = () => {
                       <label>최종매입일</label>
                     </div>
                     <div className="form-group-input">
+                      {/*
                       <input
                         ref={fieldRefs.itemCdInfo.LAST_PUR_DT}
                         type="text"
@@ -1356,6 +1358,7 @@ const ItemMgmt = () => {
                         className="form-input"
                         disabled
                       />
+                      */}
                     </div>
                   </div>
                 </div>
@@ -1391,20 +1394,21 @@ const ItemMgmt = () => {
                       <label>박스수량</label>
                     </div>
                     <div className="form-group-input">
-                      <input
+                      <SmartNumberInput
                         ref={fieldRefs.itemCdInfo.BOX_QTY}
-                        type="number"
                         value={selectedItem ? selectedItem.BOX_QTY : newItem.BOX_QTY}
-                        onChange={(e) =>
+                        onChange={(resValue) =>
                           selectedItem
-                            ? setSelectedItem({ ...selectedItem, BOX_QTY: e.target.value })
-                            : setNewItem({ ...newItem, BOX_QTY: e.target.value })
+                            ? setSelectedItem({ ...selectedItem, BOX_QTY: resValue })
+                            : setNewItem({ ...newItem, BOX_QTY: resValue })
                         }
-                        maxLength="5"
-                        /*className="form-input required"*/
+                        maxLength="4"
+                        decimalScale={0}
+                        min={0} max={1000}
                         className="form-input"
                         style={{ textAlign: 'right' }}
                         disabled={!isDisabled}
+                        placeholder="박스수량을 입력하세요."
                       />
                     </div>
                   </div>

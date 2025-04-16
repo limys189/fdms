@@ -6,6 +6,7 @@ import StatusPopup       from 'components/StatusPopup';         // 로딩 및 �
 import { confirmX }      from "components/WindowsConfirm";      // confirm 다이얼로그 라이브러리
 import { themeQuartz }   from 'ag-grid-community';
 import { formatByType }  from 'utils/formatters';
+import SmartNumberInput  from 'libs/SmartNumberInput';          // 금액, 백분율 input 라이브러리
 
 
 export const GlobalContext = createContext();
@@ -83,6 +84,8 @@ export const GlobalProvider = ({ children }) => {
 
       setGridComboVal,          // 그리드 콤보 공통코드 셋팅
       formatByType,             // 포맷타입
+
+      SmartNumberInput,         // 금액, 백분율 input 라이브러리
 
     }}>
       {children}

@@ -6,6 +6,7 @@
 >> Prop	설명
 value            : 외부 상태로 제어 가능 (controlled)
 onChange(number) : 값 변경 시 호출
+onEnter          : 엔터키 클릭 시 호출
 decimalScale     : 소수점 자리수 (default: 2)
 allowDecimal     : 소수 허용 여부 (default: true)
 usePercent       : % 표시 여부
@@ -115,7 +116,7 @@ const SmartNumberInput = forwardRef(
         setRawValue(value?.toString() || "");
         setDisplayValue(formatDisplay(value, decimalScale, usePercent, useUnit, allowDecimal, prefix, suffix));
       }
-    }, [value, focused, decimalScale, usePercent, useUnit]);
+    }, [value, focused, decimalScale, usePercent, useUnit, allowDecimal, prefix, suffix]);
 
     const handleChange = (e) => {
       const input = e.target.value.replace(/[^\d.]/g, "");
@@ -149,7 +150,7 @@ const SmartNumberInput = forwardRef(
     const handleBlur = () => {
       setFocused(false);
 
-      if (rawValue === "" || rawValue == null || rawValue == undefined) {
+      if (rawValue === "" || rawValue == null || rawValue === undefined) {
         setRawValue("0");
         setDisplayValue(formatDisplay(0, decimalScale, usePercent, useUnit, allowDecimal, prefix, suffix));
         onChange?.(0);

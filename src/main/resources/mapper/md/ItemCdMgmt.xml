@@ -120,12 +120,16 @@
              , UPDR_ID      = #{USR_ID}          /* 수정자ID */
          WHERE CO_CD        = #{CO_CD}
            AND ITEM_NO      = #{ITEM_NO}
-        ;
+--        ;
 
+
+        <if test="ZZZZZ != null and ZZZZZ != ''">
         UPDATE /* ItemCdMgmt.updateItemCd - 2 : 거래처품목 품목 정보 수정 */
                TB_CUST_ITM                    /* 거래처품목 */
            SET ITEM_NM   = #{ITEM_NM}         /* 품목명 */
              , ITEM_ABBR = #{ITEM_ABBR}       /* 품목약어명 */
+             , UPD_DTM   = NOW()              /* 수정일시 */
+             , UPDR_ID   = #{USR_ID}          /* 수정자ID */
          WHERE CO_CD     = #{CO_CD}
            AND ITEM_NO   = #{ITEM_NO}
         ;
@@ -134,9 +138,13 @@
                TB_SALE_DTL
            SET ITEM_NM   = #{ITEM_NM}         /* 품목명 */
              , ITEM_ABBR = #{ITEM_ABBR}       /* 품목약어명 */
+             , UPD_DTM   = NOW()              /* 수정일시 */
+             , UPDR_ID   = #{USR_ID}          /* 수정자ID */
          WHERE CO_CD     = #{CO_CD}
            AND ITEM_NO   = #{ITEM_NO}
         ;
+        </if>
+
     </update>
 
     <!-- 품목 코드 정보 조회 -->

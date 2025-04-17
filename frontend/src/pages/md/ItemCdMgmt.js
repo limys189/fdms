@@ -205,6 +205,7 @@ const ItemMgmt = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
 //=========================================
 //=========================================
 //=========================================
@@ -437,7 +438,7 @@ const ItemMgmt = () => {
   // 품목코드 조회
   const fetchItemCodes = useCallback(async () => {
     // API 호출 로직 (실제 구현 필요)
-    console.log('품목코드 조회:', itemCdSearch);
+//    console.log('품목코드 조회 : ', itemCdSearch);
 
     // 품목코드 조회조건 유효성 체크
     const isValid = validateFields('itemCdSearch', validationRules.itemCdSearch, itemCdSearch);
@@ -503,6 +504,7 @@ const ItemMgmt = () => {
       setItemCodes([]);
     } finally {
       setLoading(false);
+      setIsSearch(false);
     }
   }, [itemCdSearch, userInfo, validateFields, validationRules.itemCdSearch, callPostApi]);
 
@@ -544,7 +546,7 @@ const ItemMgmt = () => {
       // 낙관적 업데이트
       if (selectedItem) {
         setItemCodes(itemCodes.map(item =>
-          item.LOC_CD === dataToSave.LOC_CD ? dataToSave : item
+          item.ITEM_NO === dataToSave.ITEM_NO ? dataToSave : item
         ));
       } else {
         setItemCodes([...itemCodes, dataToSave]);
@@ -564,6 +566,7 @@ const ItemMgmt = () => {
       await callPostApi(arrReqData);
 
       setLoading(false);
+      setOpen(false);
       await confirmX({
         title: "품목코드 저장",
         message: "저장되었습니다",
@@ -574,11 +577,11 @@ const ItemMgmt = () => {
       if (selectedItem) {
         // 수정 후 리스트 업데이트
         setItemCodes(itemCodes.map(item =>
-          item.LOC_CD === dataToSave.LOC_CD ? dataToSave : item
+          item.ITEM_NO === dataToSave.ITEM_NO ? dataToSave : item
         ));
       } else {
         // 신규 등록 후 리스트 업데이트
-        setItemCodes([...itemCodes.filter(item => item.LOC_CD !== dataToSave.LOC_CD), dataToSave]);
+        setItemCodes([...itemCodes.filter(item => item.ITEM_NO !== dataToSave.ITEM_NO), dataToSave]);
         setNewItem({
           ITEM_NO: '',
           ITEM_NM: '',
@@ -621,6 +624,7 @@ const ItemMgmt = () => {
       setError('품목코드 저장 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
+      setOpen(false);
     }
   };
 
@@ -655,6 +659,7 @@ const ItemMgmt = () => {
       await callPostApi(arrReqData);
 
       setLoading(false);
+      setOpen(false);
       await confirmX({
         title: "품목코드 삭제",
         message: "삭제되었습니다",
@@ -703,6 +708,7 @@ const ItemMgmt = () => {
       setError('품목코드 삭제 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
+      setOpen(false);
     }
   };
 
@@ -718,10 +724,21 @@ const ItemMgmt = () => {
   }, [isAuthenticated, handleLogin, fetchCommonCodes]);
 
 
+  // itemCdSearch.SAL_STOP_YN 변경될 때마다 실행
+  useEffect(() => {
+    if (isSearch) {
+//      console.log('itemCdSearch.SAL_STOP_YN updated:', itemCdSearch.SAL_STOP_YN);
+      fetchItemCodes();
+    }
+  }, [itemCdSearch.SAL_STOP_YN, isSearch]);
+
+
   return (
     <div className="full-width-container">
-      {/* 로딩 및 오류 표시 다이얼로그 팝업 */}
-      {/*<StatusPopup loading={loading} error={error} onClose={handleClosePopup} />*/}
+      {/* 조회 시 로딩 및 오류 표시 다이얼로그 팝업 */}
+      { (isSearch && (loading || error)) && (
+        <StatusPopup loading={loading} error={error} onClose={handleClosePopup} />
+      )}
 
       <h5 className="main-title">품목관리</h5>
 
@@ -750,6 +767,7 @@ const ItemMgmt = () => {
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearch(true);
                             fetchItemCodes();
                           }
                         }}
@@ -772,6 +790,7 @@ const ItemMgmt = () => {
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearch(true);
                             fetchItemCodes();
                           }
                         }}
@@ -794,6 +813,7 @@ const ItemMgmt = () => {
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearch(true);
                             fetchItemCodes();
                           }
                         }}
@@ -810,7 +830,10 @@ const ItemMgmt = () => {
                       <select
                         ref={fieldRefs.itemCdSearch.SAL_STOP_YN}
                         value={itemCdSearch.SAL_STOP_YN}
-                        onChange={(e) => setItemSearch({ ...itemCdSearch, SAL_STOP_YN: e.target.value })}
+                        onChange={(e) => {
+                          setItemSearch({ ...itemCdSearch, SAL_STOP_YN: e.target.value });
+                          setIsSearch(true);
+                        }}
                         className="form-select"
                       >
                         {(commonCodes.find(item => item.SAL_STOP_YN_A)?.SAL_STOP_YN_A || []).map((option) => (
@@ -876,6 +899,7 @@ const ItemMgmt = () => {
                     <button
                       onClick={(e) => {
                         setIsDisabled(false);
+                        setIsSearch(true);
                         fetchItemCodes();
                       }}
                       className="search-btn"
@@ -1348,7 +1372,14 @@ const ItemMgmt = () => {
                       <SmartDateInput
                         ref={fieldRefs.itemCdInfo.LAST_PUR_DT}
                         value={selectedItem ? selectedItem.LAST_PUR_DT : newItem.LAST_PUR_DT}
+                        onChange={(resDateVal) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, LAST_PUR_DT: resDateVal })
+                            : setNewItem({ ...newItem, LAST_PUR_DT: resDateVal })
+                        }
                         maxLength="10"
+                        className="form-input"
+                        style={{ textAlign: 'left' }}
                         disabled
                       />
                     </div>
@@ -1398,6 +1429,10 @@ const ItemMgmt = () => {
                         decimalScale={0}
                         allowDecimal={false}
                         min={0} max={9999}
+                        prefix={''}
+                        suffix={
+                          getLabelFromId(setGridComboVal(commonCodes, 'UNIT_GCD_B'), selectedItem ? selectedItem.UNIT_GCD : newItem.UNIT_GCD)
+                        }
                         disabled={!isDisabled}
                         placeholder="박스수량을 입력하세요."
                       />
@@ -1597,7 +1632,14 @@ const ItemMgmt = () => {
                       <SmartDateInput
                         ref={fieldRefs.itemCdInfo.STK_ADJ_DT}
                         value={selectedItem ? selectedItem.STK_ADJ_DT : newItem.STK_ADJ_DT}
+                        onChange={(resDateVal) =>
+                          selectedItem
+                            ? setSelectedItem({ ...selectedItem, STK_ADJ_DT: resDateVal })
+                            : setNewItem({ ...newItem, STK_ADJ_DT: resDateVal })
+                        }
                         maxLength="10"
+                        className="form-input"
+                        style={{ textAlign: 'left' }}
                         disabled
                       />
                     </div>
@@ -1647,6 +1689,8 @@ const ItemMgmt = () => {
                         decimalScale={0}
                         allowDecimal={false}
                         min={0} max={999}
+                        prefix={''}
+                        suffix={'일'}
                         disabled={!isDisabled}
                         placeholder="재고기간을 입력하세요."
                       />
@@ -1669,6 +1713,8 @@ const ItemMgmt = () => {
                         decimalScale={0}
                         allowDecimal={false}
                         min={0} max={999}
+                        prefix={''}
+                        suffix={'일'}
                         disabled={!isDisabled}
                         placeholder="발주기간을 입력하세요."
                       />
@@ -1691,6 +1737,8 @@ const ItemMgmt = () => {
                         decimalScale={0}
                         allowDecimal={false}
                         min={0} max={999}
+                        prefix={''}
+                        suffix={'일'}
                         disabled={!isDisabled}
                         placeholder="매입기간을 입력하세요."
                       />
@@ -1713,6 +1761,8 @@ const ItemMgmt = () => {
                         decimalScale={0}
                         allowDecimal={false}
                         min={0} max={999}
+                        prefix={''}
+                        suffix={'일'}
                         disabled={!isDisabled}
                         placeholder="유통기한을 입력하세요."
                       />
@@ -1801,6 +1851,8 @@ const ItemMgmt = () => {
                             : setNewItem({ ...newItem, SAL_STOP_DTM: resDateVal })
                         }
                         maxLength="20"
+                        className="form-input"
+                        style={{ textAlign: 'left' }}
                         disabled
                       />
                     </div>

@@ -85,7 +85,6 @@ const WhLocMgmt = () => {
     },
   };
 
-
   // 공통코드 상태
   const [commonCodes, setCommonCodes] = useState([]);
   const [codeSearch] = useState([
@@ -112,6 +111,7 @@ const WhLocMgmt = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
 //=========================================
 //=========================================
 //=========================================
@@ -309,7 +309,7 @@ const WhLocMgmt = () => {
   // 창고위치코드 조회
   const fetchWhLocCodes = useCallback(async () => {
     // API 호출 로직 (실제 구현 필요)
-//    console.log('창고위치코드 조회:', whLocSearch);
+//    console.log('창고위치코드 조회 : ', whLocSearch);
 
     // 창고위치코드 조회조건 유효성 체크
     const isValid = validateFields('whLocSearch', validationRules.whLocSearch, whLocSearch);
@@ -350,6 +350,7 @@ const WhLocMgmt = () => {
       setWhLocCodes([]);
     } finally {
       setLoading(false);
+      setIsSearch(false);
     }
   }, [whLocSearch, userInfo, validateFields, validationRules.whLocSearch, callPostApi]);
 
@@ -519,10 +520,21 @@ const WhLocMgmt = () => {
   }, [isAuthenticated, handleLogin, fetchCommonCodes]);
 
 
+  // whLocSearch.USE_YN이 변경될 때마다 실행
+  useEffect(() => {
+    if (isSearch) {
+//      console.log('whLocSearch.USE_YN updated:', whLocSearch.USE_YN);
+      fetchWhLocCodes();
+    }
+  }, [whLocSearch.USE_YN, isSearch]);
+
+
   return (
     <div className="half-width-container">
-      {/* 로딩 및 오류 표시 다이얼로그 팝업 */}
-      {/*<StatusPopup loading={loading} error={error} onClose={handleClosePopup} />*/}
+      {/* 조회 시 로딩 및 오류 표시 다이얼로그 팝업 */}
+      { (isSearch && (loading || error)) && (
+        <StatusPopup loading={loading} error={error} onClose={handleClosePopup} />
+      )}
 
       <h5 className="main-title">창고위치관리</h5>
 
@@ -554,6 +566,7 @@ const WhLocMgmt = () => {
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearch(true);
                             fetchWhLocCodes();
                           }
                         }}
@@ -575,6 +588,7 @@ const WhLocMgmt = () => {
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearch(true);
                             fetchWhLocCodes();
                           }
                         }}
@@ -595,7 +609,10 @@ const WhLocMgmt = () => {
                       <select
                         ref={fieldRefs.whLocSearch.USE_YN}
                         value={whLocSearch.USE_YN}
-                        onChange={(e) => setWhLocSearch({ ...whLocSearch, USE_YN: e.target.value })}
+                        onChange={(e) => {
+                          setWhLocSearch({ ...whLocSearch, USE_YN: e.target.value });
+                          setIsSearch(true);
+                        }}
                         className="form-select"
                       >
                         {(commonCodes.find(item => item.USE_YN_A)?.USE_YN_A || []).map((option) => (
@@ -629,6 +646,7 @@ const WhLocMgmt = () => {
                     <button
                       onClick={(e) => {
                         setIsDisabled(false);
+                        setIsSearch(true);
                         fetchWhLocCodes();
                       }}
                       className="search-btn"

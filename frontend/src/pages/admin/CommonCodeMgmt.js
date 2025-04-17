@@ -157,6 +157,8 @@ const CommonCodeMgmt = () => {
   const [error, setError] = useState(null);
   const [isLrgInfoDisabled, setIsLrgInfoDisabled] = useState(false);
   const [isSmlInfoDisabled, setIsSmlInfoDisabled] = useState(false);
+  const [isSearchLrg, setIsSearchLrg] = useState(false);
+  const [isSearchSml, setIsSearchSml] = useState(false);
 //=========================================
 //=========================================
 //=========================================
@@ -490,6 +492,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
       setLargeCodes([]);
     } finally {
       setLoading(false);
+      setIsSearchLrg(false);
     }
   }, [largeSearch, userInfo, validateFields, validationRules.lrgSearch, callPostApi, resetSmallArea]);
 
@@ -532,6 +535,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
       setSmallCodes([]);
     } finally {
       setLoading(false);
+      setIsSearchSml(false);
     }
 //  }, [selectedLarge, userInfo, smallSearch, validateFields, validationRules.smlSearch]);
   };
@@ -867,8 +871,25 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
   }, [selectedLarge?.LRG_CD]);
 
 
+  // largeSearch.USE_YN, smallSearch.USE_YN 변경될 때마다 실행
+  useEffect(() => {
+    if (isSearchLrg) {
+//      console.log('largeSearch.USE_YN updated:', largeSearch.USE_YN);
+      fetchLargeCodes();
+    }
+    if (isSearchSml) {
+//      console.log('smallSearch.USE_YN updated:', smallSearch.USE_YN);
+      fetchSmallCodes();
+    }
+  }, [largeSearch.USE_YN, isSearchLrg, smallSearch.USE_YN, isSearchSml]);
+
+
   return (
     <div className="common-code-container">
+      {/* 조회 시 로딩 및 오류 표시 다이얼로그 팝업 */}
+      { ((isSearchLrg || isSearchSml) && (loading || error)) && (
+        <StatusPopup loading={loading} error={error} onClose={handleClosePopup} />
+      )}
 
       <h5 className="main-title">공통코드관리</h5>
 
@@ -900,6 +921,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearchLrg(true);
                             fetchLargeCodes();
                           }
                         }}
@@ -921,6 +943,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearchLrg(true);
                             fetchLargeCodes();
                           }
                         }}
@@ -941,7 +964,10 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                       <select
                         ref={fieldRefs.lrgSearch.USE_YN}
                         value={largeSearch.USE_YN}
-                        onChange={(e) => setLargeSearch({ ...largeSearch, USE_YN: e.target.value })}
+                        onChange={(e) => {
+                          setLargeSearch({ ...largeSearch, USE_YN: e.target.value });
+                          setIsSearchLrg(true);
+                        }}
                         className="form-select"
                       >
                         {(commonCodes.find(item => item.USE_YN_A)?.USE_YN_A || []).map((option) => (
@@ -976,6 +1002,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                     <button
                       onClick={(e) => {
                         setIsLrgInfoDisabled(false);
+                        setIsSearchLrg(true);
                         fetchLargeCodes();
                       }}
                       className="search-btn"
@@ -1102,6 +1129,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearchSml(true);
                             fetchSmallCodes();
                           }
                         }}
@@ -1123,6 +1151,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                           const charCode = e.charCode;
                           if ( charCode === 13 ) { // 엔터 이벤트
                             e.preventDefault();
+                            setIsSearchSml(true);
                             fetchSmallCodes();
                           }
                         }}
@@ -1143,7 +1172,10 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                       <select
                         ref={fieldRefs.smlSearch.USE_YN}
                         value={smallSearch.USE_YN}
-                        onChange={(e) => setSmallSearch({ ...smallSearch, USE_YN: e.target.value })}
+                        onChange={(e) => {
+                          setSmallSearch({ ...smallSearch, USE_YN: e.target.value });
+                          setIsSearchSml(true);
+                        }}
                         className="form-select"
                       >
                         {(commonCodes.find(item => item.USE_YN_A)?.USE_YN_A || []).map((option) => (
@@ -1177,6 +1209,7 @@ console.log('handleCellValueChanged   :::   ', event.colDef);
                     <button
                       onClick={(e) => {
                         setIsSmlInfoDisabled(false);
+                        setIsSearchSml(true);
                         fetchSmallCodes();
                       }}
                       className="search-btn"
